@@ -5,9 +5,9 @@
 #ifndef __IRR_C_SAW_OSCILLATOR_H__
 #define __IRR_C_SAW_OSCILLATOR_H__
 
-#include "IFunctionOfTime.h"
-
 #include <irrlicht.h>
+
+#include "../core/IFunction.h"
 
 /**
 *
@@ -29,7 +29,7 @@ namespace irr
 {
 	/// @brief class that simulates a digital saw/ramp oscillator
 	template <class T>
-	class CSawOscillator : public IFunctionOfTime<T>
+	class CSawOscillator : public IFunction<T>
 	{
 		public:
 			/// @brief class constructor

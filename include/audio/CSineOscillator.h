@@ -5,15 +5,15 @@
 #ifndef __IRR_C_SINE_OSCILLATOR_H__
 #define __IRR_C_SINE_OSCILLATOR_H__
 
-#include "IFunctionOfTime.h"
-
 #include <irrlicht.h>
+
+#include "../core/IFunction.h"
 
 namespace irr
 {
 	/// @brief class that simulates a digital sine oscillator
 	template <class T>
-	class CSineOscillator : public IFunctionOfTime<T>
+	class CSineOscillator : public IFunction<T>
 	{
 		public:
 			///@brief constant for 2*PI

@@ -5,15 +5,15 @@
 #ifndef __IRR_C_RECTANGLE_OSCILLATOR_H__
 #define __IRR_C_RECTANGLE_OSCILLATOR_H__
 
-#include "IFunctionOfTime.h"
-
 #include <irrlicht.h>
+
+#include "../core/IFunction.h"
 
 namespace irr
 {
 	///@brief class that simulates a digital pulse/rectangle/square oscillator
 	template <class T>
-	class CRectangleOscillator : public IFunctionOfTime<T>
+	class CRectangleOscillator : public IFunction<T>
 	{
 	public:
 		///@brief class contructor

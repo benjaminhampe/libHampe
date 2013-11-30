@@ -5,15 +5,15 @@
 #ifndef __IRR_C_TRIANGLE_OSCILLATOR_H__
 #define __IRR_C_TRIANGLE_OSCILLATOR_H__
 
-#include "IFunctionOfTime.h"
-
 #include <irrlicht.h>
+
+#include "../core/IFunction.h"
 
 namespace irr
 {
 	/// @brief class that simulates a digital triangle oscillator
 	template <class T>
-	class CTriangleOscillator : public IFunctionOfTime<T>
+	class CTriangleOscillator : public IFunction<T>
 	{
 		public:
 			///@brief constant for 2*PI

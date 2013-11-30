@@ -2,9 +2,15 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __MY_RESOURCES_H__
-#define __MY_RESOURCES_H__
+#include "imageAtlas.h"
 
-#include <windows.h>
+namespace irr
+{
 
-#endif
+namespace video
+{
+
+
+} // end namespace video
+
+} // end namespace irr
