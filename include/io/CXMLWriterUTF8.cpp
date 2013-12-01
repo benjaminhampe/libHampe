@@ -31,7 +31,7 @@ CXMLWriterUTF8::CXMLWriterUTF8(IWriteFile* file)
 //! Destructor
 CXMLWriterUTF8::~CXMLWriterUTF8()
 {
-	const c8* const htmlEnd = "</body></html>\n";
+	// const c8* const htmlEnd = "</body></html>\n";
 
 	if (File)
 		File->drop();

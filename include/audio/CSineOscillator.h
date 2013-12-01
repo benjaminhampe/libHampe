@@ -49,7 +49,7 @@ namespace irr
 			/// @brief setter
 			virtual void setPhase( const T& phase )
 			{
-				Phase = core::clamp<T>( phase, (T)0, (T)(2.0*core::PI64) );
+				Phase = core::clamp<T>( phase, T(0), T(1) );
 			}
 
 			/// @brief setter

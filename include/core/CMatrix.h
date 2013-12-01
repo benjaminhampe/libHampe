@@ -337,10 +337,10 @@ namespace core
 		}
 
 	private:
-		f32** Data;	/// pointer to 2d field == array of rows ( each row is an arrays with "Cols" elements )
 		u32 Rows;	/// number of rows ( y-direction )
 		u32 Cols;	/// number of columns ( x-direction )
 		u32 Size;	/// number of elements in matrix ( == Rows * Cols )
+		f32** Data;	/// pointer to 2d field == array of rows ( each row is an arrays with "Cols" elements )
 		core::stringc Name;
 		bool IsIdentity;
 		bool IsDeterminantDirty;

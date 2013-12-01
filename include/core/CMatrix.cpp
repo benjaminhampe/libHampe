@@ -359,7 +359,7 @@ bool CMatrix::shiftRows( s32 rows )
             s32 i = ( rows+(s32)y );
 
             if (i<0) i += Rows;
-            if (i>=Rows) i -= Rows;
+            if (i>=(s32)Rows) i -= (s32)Rows;
             //%((s32)Rows);
             u32 k = (u32)i;
 //            k = Rows-1-k;

@@ -2,65 +2,88 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#ifndef __IRR_C_SAW_OSCILLATOR_H__
-#define __IRR_C_SAW_OSCILLATOR_H__
+#ifndef __IRR_C_ADSR_ENVELOPE_H__
+#define __IRR_C_ADSR_ENVELOPE_H__
 
 #include <irrlicht.h>
 
 #include "../core/IFunction.h"
 
-/**
-*
-*\page Mathe
-*  \f[
-*   |I_2|=\left| \int_{0}^T \psi(t)
-*             \left\{
-*                u(a,t)-
-*                \int_{\gamma(t)}^a
-*                \frac{d\theta}{k(\theta,t)}
-*                \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
-*             \right\} dt
-*          \right|
-*  \f]
-*
-*/
-
 namespace irr
 {
 	/// @brief class that simulates a digital saw/ramp oscillator
 	template <class T>
-	class CSawOscillator : public IFunction<T>
+	class CADSREnvelope : public IFunction<T>
 	{
 		public:
 			/// @brief class constructor
-			explicit CSawOscillator(
-				const T& freq = (T)440,
-				const T& phase = (T)0,
+			explicit CADSREnvelope(
+				const T& a = (T)20 /* in milliseconds */,
+				const T& d = (T)100 /* in milliseconds */,
+				const T& s = (T)0.7 /* in range [0,1] of amplitude_range ( max - min ) */,
+				const T& r = (T)1000 /* in milliseconds */,
 				const T& amplitude_max = (T)1,
 				const T& amplitude_min = (T)0 )
 			{
-				setFrequency( freq );
-				setPhase( phase );
+				setAttack( a );
+				setDecay( d );
+				setSustain( s );
+				setRelease( r );
 				setAmplitudeRange( amplitude_max, amplitude_min );
 			}
 
 			/// @brief class destructor
-			virtual ~CSawOscillator()
+			virtual ~CADSREnvelope()
 			{
 
 			}
 
 			/// @brief setter
-			virtual void setFrequency( const T& frequency )
+			virtual void setAttack( const T& a )
 			{
-				Frequency = core::clamp<T>( frequency, (T)1, (T)22050 );
-				Period = core::reciprocal( Frequency );
+				A = a;
+			}
+
+			/// @brief getter
+			virtual T getAttack( ) const
+			{
+				return A;
 			}
 
 			/// @brief setter
-			virtual void setPhase( const T& phase )
+			virtual void setDecay( const T& d )
 			{
-				Phase = core::clamp<T>( phase, T(0), T(1) );
+				D = d;
+			}
+
+			/// @brief getter
+			virtual T getDecay( ) const
+			{
+				return D;
+			}
+
+			/// @brief setter
+			virtual void setSustain( const T& s )
+			{
+				S = s;
+			}
+
+			/// @brief getter
+			virtual T getSustain( ) const
+			{
+				return S;
+			}
+
+			/// @brief setter
+			virtual void setRelease( const T& r )
+			{
+				R = r;
+			}
+
+			/// @brief getter
+			virtual T getRelease( ) const
+			{
+				return R;
 			}
 
 			/// @brief setter
@@ -84,18 +107,6 @@ namespace irr
 			}
 
 			/// @brief getter
-			virtual T getFrequency( ) const
-			{
-				return Frequency;
-			}
-
-			/// @brief getter
-			virtual T getPhase( ) const
-			{
-				return Phase;
-			}
-
-			/// @brief getter
 			virtual T getAmplitudeMin( ) const
 			{
 				return Amplitude_Min;
@@ -112,18 +123,20 @@ namespace irr
 			{
 				const T t_modded = fmod( seconds - Period*Phase, Period );
 
-				return ( Amplitude_Max - Amplitude_Min ) * Frequency * t_modded + Amplitude_Min;
+				// nothing so far
+
+				return T(1);
 			}
 
 		private:
-
-			T Frequency;
-			T Period;
-			T Phase;
+			T A;
+			T D;
+			T S;
+			T R;
 			T Amplitude_Min;
 			T Amplitude_Max;
 	};
 
 } // end namespace irr
 
-#endif // __IRR_C_SAW_OSCILLATOR_H__
+#endif // __IRR_C_ADSR_ENVELOPE_H__

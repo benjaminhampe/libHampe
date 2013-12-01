@@ -29,58 +29,6 @@ CGUIImageViewer::CGUIImageViewer(
 	if (Environment)
 		skin = Environment->getSkin();
 
-	//FrameRect.UpperLeftCorner.X += skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
-	//FrameRect.UpperLeftCorner.Y += skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
-	//FrameRect.LowerRightCorner.X -= skin->getSize(EGDS_TEXT_DISTANCE_X)+1;
-	//FrameRect.LowerRightCorner.Y -= skin->getSize(EGDS_TEXT_DISTANCE_Y)+1;
-
-	TextColor=skin->getColor(EGDC_HIGH_LIGHT_TEXT);
-
-	s32 w = rectangle.getWidth(); // in pixels
-	s32 h = rectangle.getHeight(); // in pixels
-	s32 sb_size = 16; // in pixels
-
-	core::recti r_canvas = makeRect(0,0, (u32)(w-sb_size-1), (u32)(h-sb_size-1) );
-	core::recti r_scrollH = makeRect(1,h-sb_size, (u32)(w-sb_size-1), (u32)sb_size );
-	core::recti r_scrollV = makeRect( w-sb_size, 1, (u32)sb_size, (u32)(h-sb_size-1) );
-	core::recti r_reset = makeRect( w-sb_size, h-sb_size, (u32)sb_size, (u32)sb_size );
-
-	ScrollbarH = Environment->addScrollBar(true,r_scrollH,this,-1);
-	ScrollbarH->setVisible(true);
-	ScrollbarH->setSubElement(false);
-	ScrollbarH->setTabStop(false);
-	ScrollbarH->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
-	ScrollbarH->setSmallStep(3);
-	ScrollbarH->setMin(0);
-	ScrollbarH->setMax(100);
-	ScrollbarH->setPos(0);
-
-	ScrollbarV = Environment->addScrollBar(false,r_scrollV,this,-1);
-	ScrollbarV->setVisible(true);
-	ScrollbarV->setSubElement(false);
-	ScrollbarV->setTabStop(false);
-	ScrollbarV->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
-	ScrollbarV->setMin(0);
-	ScrollbarV->setMax(100);
-	ScrollbarV->setSmallStep(3);
-	ScrollbarV->setPos(0);
-
-	Environment->addButton( r_reset, this, -1, L"R", L"Reset Zoom Button");
-
-	BackgroundColor=skin->getColor(EGDC_WINDOW);
-
-	// Define the defaults strings for the interface
-	menustring[GID_CUT]=L"Cut";
-	menustring[GID_COPY]=L"Copy";
-	menustring[GID_PASTE]=L"Paste";
-	menustring[GID_DELETE]=L"Delete";
-	menustring[GID_UNDO]=L"Undo";
-	menustring[GID_REDO]=L"Redo";
-	menustring[GID_LINECOUNT]=L"Toggle linecount display";
-
-
-	ContentPane = 0;
-
 	Environment->setFocus(this);
 }
 
@@ -90,22 +38,6 @@ CGUIImageViewer::~CGUIImageViewer()
 {
 
 }
-
-//void CGUIImageViewer::updateAbsolutePosition()
-//{
-//	core::rect<s32> oldAbsoluteRect(AbsoluteRect);
-//	IGUIElement::updateAbsolutePosition();
-//	if ( oldAbsoluteRect != AbsoluteRect )
-//	{
-//		breakText();
-//	}
-//}
-//
-//void CGUIImageViewer::setBackgroundColor(video::SColor color)
-//{
-//	BackgroundColor = color;
-//}
-
 
 //! called if an event happened.
 bool CGUIImageViewer::OnEvent(const SEvent& event)
@@ -119,20 +51,6 @@ bool CGUIImageViewer::OnEvent(const SEvent& event)
 //			if (event.GUIEvent.EventType == gui::EGET_MENU_ITEM_SELECTED)
 //			{
 //				int sel = static_cast<IGUIContextMenu*>(event.GUIEvent.Caller)->getSelectedItem();
-//
-//				if (sel == CM_CUT)
-//					cut();
-//				else if (sel == CM_COPY)
-//					copy();
-//				else if (sel == CM_PASTE)
-//					paste();
-//				else if (sel == CM_DELETE)
-//					deleteText();
-//				else if (sel == CM_UNDO)
-//					undo();
-//				else if (sel == CM_REDO)
-//					redo();
-//
 //
 //				Environment->setFocus(this);
 //				InMenu = false;

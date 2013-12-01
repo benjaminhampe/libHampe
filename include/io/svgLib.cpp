@@ -122,10 +122,10 @@ core::stringc SVG_DashArray( const u16& stipple )
 		u32 count = 1;
 		bool lastBit = (stipple & (1<<15)) > 0;
 		bool needColon = false;
-		for (u32 i=1; i<17; i++)
+		for (u32 i=1; i<16; i++)
 		{
-			bool bit = (stipple & (1<<15-i)) > 0;
-			if (i<16 && (lastBit == bit))
+			bool bit = (stipple & (1<<(15-i))) > 0;
+			if (i<15 && (lastBit == bit))
 			{
 				count++;
 			}
