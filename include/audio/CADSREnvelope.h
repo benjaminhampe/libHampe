@@ -16,12 +16,24 @@ namespace irr
 	class CADSREnvelope : public IFunction<T>
 	{
 		public:
+			enum E_MONOTONIC_TYPE
+			{
+				EMTT_CONSTANT=0,
+				EMTT_LINEAR,
+				EMTT_QUADRATIC,
+				EMTT_SQUAREROOT,
+				EMTT_CUBIC,
+				EMTT_EXPONENTIAL,
+				EMTT_LOGARITHMIC,
+				EMTT_COUNT
+			};
+
 			/// @brief class constructor
 			explicit CADSREnvelope(
-				const T& a = (T)20 /* in milliseconds */,
-				const T& d = (T)100 /* in milliseconds */,
+				const T& a = (T)50 /* in milliseconds */,
+				const T& d = (T)120 /* in milliseconds */,
 				const T& s = (T)0.7 /* in range [0,1] of amplitude_range ( max - min ) */,
-				const T& r = (T)1000 /* in milliseconds */,
+				const T& r = (T)300 /* in milliseconds */,
 				const T& amplitude_max = (T)1,
 				const T& amplitude_min = (T)0 )
 			{
@@ -121,7 +133,7 @@ namespace irr
 			///@brief implementation of interface IFunctionOfTime
 			virtual T operator() ( const T& seconds ) const
 			{
-				const T t_modded = fmod( seconds - Period*Phase, Period );
+				// const T t_modded = fmod( seconds - Period*Phase, Period );
 
 				// nothing so far
 

@@ -7,12 +7,6 @@
 
 #include <irrlicht.h>
 
-#include "audio/CRectangleOscillator.h"
-#include "audio/CSawOscillator.h"
-#include "audio/CSineOscillator.h"
-#include "audio/CTriangleOscillator.h"
-#include "audio/FourierTransformRtoC.h"
-
 #include "core/IFunction.h"
 #include "core/IStringable.h"
 #include "core/CDateTime.h"
@@ -22,6 +16,14 @@
 #include "core/irrUString.h"
 #include "core/sinCosTable.h"
 #include "core/sprintf.h"
+
+#include "audio/FourierTransformRtoC.h"
+#include "audio/CADSREnvelope.h"
+#include "audio/CRectangleOscillator.h"
+#include "audio/CSawOscillator.h"
+#include "audio/CSineOscillator.h"
+#include "audio/CTriangleOscillator.h"
+#include "audio/CCombinedOscillator.h"
 
 #include "gui/CGUIImageViewer.h"
 //#include "gui/CGUIPlot.h"
