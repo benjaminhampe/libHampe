@@ -2,13 +2,13 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "drawEllipse.h"
+#include "imageDrawEllipse.h"
 
-#include "drawPixel.h"
+#include "imageDrawPixel.h"
 
-#include "drawLine.h"
+#include "imageDrawLine.h"
 
-#include "drawCircle.h"
+#include "imageDrawCircle.h"
 
 namespace irr
 {

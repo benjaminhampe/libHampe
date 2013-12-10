@@ -60,7 +60,7 @@
 /// uses ColorGradients for drawing
 #include "../video/IColorGradient.h"
 
-#include "../core/FourierTransformRtoC.h"
+#include "FourierTransformRtoC.h"
 
 //! irrAudio Version
 #define IRR_AUDIO_VERSION "1.0"

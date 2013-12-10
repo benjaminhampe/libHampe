@@ -18,30 +18,30 @@ namespace irr
 		public:
 			enum E_MONOTONIC_TYPE
 			{
-				EMTT_CONSTANT=0,
-				EMTT_LINEAR,
+//				EMTT_CONSTANT,
+				EMTT_LINEAR=0,
 				EMTT_QUADRATIC,
-				EMTT_SQUAREROOT,
-				EMTT_CUBIC,
-				EMTT_EXPONENTIAL,
-				EMTT_LOGARITHMIC,
+//				EMTT_CUBIC,
+//				EMTT_SQUAREROOT,
+//				EMTT_EXPONENTIAL,
+//				EMTT_LOGARITHMIC,
 				EMTT_COUNT
 			};
 
 			/// @brief class constructor
 			explicit CADSREnvelope(
-				const T& a = (T)50 /* in milliseconds */,
-				const T& d = (T)120 /* in milliseconds */,
+				const T& a = (T)0.01 /* in seconds */,
+				const T& d = (T)0.1 /* in seconds */,
 				const T& s = (T)0.7 /* in range [0,1] of amplitude_range ( max - min ) */,
-				const T& r = (T)300 /* in milliseconds */,
-				const T& amplitude_max = (T)1,
-				const T& amplitude_min = (T)0 )
+				const T& r = (T)0.3 /* in seconds */,
+				const E_MONOTONIC_TYPE& type = EMTT_LINEAR )
 			{
-				setAttack( a );
-				setDecay( d );
-				setSustain( s );
-				setRelease( r );
-				setAmplitudeRange( amplitude_max, amplitude_min );
+				set( a, d, s, r, type );
+//				setAttack( a );
+//				setDecay( d );
+//				setSustain( s );
+//				setRelease( r );
+				// setAmplitudeRange( amplitude_max, amplitude_min );
 			}
 
 			/// @brief class destructor
@@ -51,9 +51,70 @@ namespace irr
 			}
 
 			/// @brief setter
-			virtual void setAttack( const T& a )
+			virtual void set(
+				const T& a,
+				const T& d,
+				const T& s,
+				const T& r,
+				const E_MONOTONIC_TYPE& type = EMTT_LINEAR )
 			{
 				A = a;
+				D = d;
+				S = s;
+				R = r;
+				Max = T(1);
+				Min = T(0);
+				TypeA = type;
+				TypeD = type;
+				TypeR = type;
+			}
+
+			///@brief implementation of interface IFunctionOfTime
+			virtual T operator() ( const T& seconds ) const
+			{
+				//const T Period = T(.001*(A+D+R)); // convert to seconds
+				//const T t = fmod( seconds, Period ); // modulo to first period
+				const T t = seconds;
+
+				const T Range = (Max-Min);
+
+				const T zero(0);
+
+				switch (TypeA)
+				{
+					case EMTT_LINEAR:
+					{
+						if ( t < zero )
+						{
+							return zero;
+						}
+						else if ( t < A ) /// Attack
+						{
+							T m = Range*core::reciprocal(A);
+							T n = Min;
+							return m*t+n;
+						}
+						else if ( (t > A) && (t <= (A+D)) ) /// Decay
+						{
+							T m = (S-T(1))*Range*core::reciprocal(D);
+							T b = A+D;
+							T n = S*Range + Min;
+
+							return m*(t-b)+n;
+						}
+						else
+						{
+							return S*Range + Min;
+						}
+					}
+					break;
+
+					default:
+						break;
+				}
+
+				// nothing so far
+				return zero;
 			}
 
 			/// @brief getter
@@ -62,10 +123,10 @@ namespace irr
 				return A;
 			}
 
-			/// @brief setter
-			virtual void setDecay( const T& d )
+			/// @brief getter
+			virtual E_MONOTONIC_TYPE getAttackType( ) const
 			{
-				D = d;
+				return TypeA;
 			}
 
 			/// @brief getter
@@ -74,10 +135,10 @@ namespace irr
 				return D;
 			}
 
-			/// @brief setter
-			virtual void setSustain( const T& s )
+			/// @brief getter
+			virtual E_MONOTONIC_TYPE getDecayType( ) const
 			{
-				S = s;
+				return TypeD;
 			}
 
 			/// @brief getter
@@ -86,58 +147,68 @@ namespace irr
 				return S;
 			}
 
-			/// @brief setter
-			virtual void setRelease( const T& r )
-			{
-				R = r;
-			}
-
 			/// @brief getter
 			virtual T getRelease( ) const
 			{
 				return R;
 			}
 
+			/// @brief getter
+			virtual E_MONOTONIC_TYPE getReleaseType( ) const
+			{
+				return TypeR;
+			}
+
+			/// @brief getter
+			virtual T getMin( ) const
+			{
+				return Min;
+			}
+
+			/// @brief getter
+			virtual T getMax( ) const
+			{
+				return Max;
+			}
+
 			/// @brief setter
-			virtual void setAmplitudeRange( const T& amplitude_max, const T& amplitude_min )
+			virtual void setAttack( const T& a )
+			{
+				A = a;
+			}
+			/// @brief setter
+			virtual void setDecay( const T& d )
+			{
+				D = d;
+			}
+			/// @brief setter
+			virtual void setSustain( const T& s )
+			{
+				S = s;
+			}
+			/// @brief setter
+			virtual void setRelease( const T& r )
+			{
+				R = r;
+			}
+			/// @brief setter
+			virtual void setMinMax( const T& y_max, const T& y_min )
 			{
 				//Amplitude = core::clamp<T>( amplitude, (T)0, (T)32767 );
-				Amplitude_Min = amplitude_min;
-				Amplitude_Max = amplitude_max;
+				Min = y_min;
+				Max = y_max;
 			}
 
 			/// @brief setter
-			virtual void setAmplitudeMin( const T& amplitude_min )
+			virtual void setMin( const T& y_min )
 			{
-				Amplitude_Min = amplitude_min;
+				Min = y_min;
 			}
 
 			/// @brief setter
-			virtual void setAmplitudeMax( const T& amplitude_max )
+			virtual void setMax( const T& y_max )
 			{
-				Amplitude_Max = amplitude_max;
-			}
-
-			/// @brief getter
-			virtual T getAmplitudeMin( ) const
-			{
-				return Amplitude_Min;
-			}
-
-			/// @brief getter
-			virtual T getAmplitudeMax( ) const
-			{
-				return Amplitude_Max;
-			}
-
-			///@brief implementation of interface IFunctionOfTime
-			virtual T operator() ( const T& seconds ) const
-			{
-				// const T t_modded = fmod( seconds - Period*Phase, Period );
-
-				// nothing so far
-
-				return T(1);
+				Max = y_max;
 			}
 
 		private:
@@ -145,8 +216,11 @@ namespace irr
 			T D;
 			T S;
 			T R;
-			T Amplitude_Min;
-			T Amplitude_Max;
+			T Min;
+			T Max;
+			E_MONOTONIC_TYPE TypeA;
+			E_MONOTONIC_TYPE TypeD;
+			E_MONOTONIC_TYPE TypeR;
 	};
 
 } // end namespace irr

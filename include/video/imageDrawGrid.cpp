@@ -2,7 +2,7 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "drawPolyLine.h"
+#include "imageDrawGrid.h"
 
 namespace irr
 {

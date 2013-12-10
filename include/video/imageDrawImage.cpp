@@ -2,9 +2,9 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "drawImage.h"
+#include "imageDrawImage.h"
 
-#include "drawPixel.h"
+#include "imageDrawPixel.h"
 
 namespace irr
 {

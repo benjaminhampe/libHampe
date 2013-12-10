@@ -2,7 +2,7 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "drawCircle.h"
+#include "imageDrawCircle.h"
 
 #include <../source/Irrlicht/os.h>
 #include <../source/Irrlicht/CColorConverter.h>
@@ -13,11 +13,11 @@
 //#include <../source/Irrlicht/CColorConverter.cpp>
 //#include <../source/Irrlicht/CImage.cpp>
 
-#include "drawPixel.h"
+#include "imageDrawPixel.h"
 
-#include "drawLine.h"
+#include "imageDrawLine.h"
 
-#include "drawImage.h"
+#include "imageDrawImage.h"
 
 namespace irr
 {

@@ -2,127 +2,9 @@
 // This file is part of the "irrlicht-engine"
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "drawLine.h"
+#include "imageDrawLine.h"
 
-#include "drawPixel.h"
-
-/// ----------------------------
-
-/// BASIC DIALECT MACROS
-
-/// ----------------------------
-
-#ifdef BEGIN_FUNCTION
-	#undef BEGIN_FUNCTION
-#endif // BEGIN_FUNCTION
-
-#ifndef BEGIN_FUNCTION
-	#define BEGIN_FUNCTION {
-#endif // BEGIN_FUNCTION
-
-#ifdef END_FUNCTION
-	#undef END_FUNCTION
-#endif // END_FUNCTION
-
-#ifndef END_FUNCTION
-	#define END_FUNCTION }
-#endif // END_FUNCTION
-
-/// ----------------------------
-
-#ifdef IF
-	#undef IF
-#endif // IF
-
-#ifndef IF
-	#define IF if (
-#endif // IF
-
-#ifdef THEN
-	#undef THEN
-#endif // THEN
-
-#ifndef THEN
-	#define THEN ) {
-#endif // THEN
-
-#ifdef ENDIF
-	#undef ENDIF
-#endif // ENDIF
-
-#ifndef ENDIF
-	#define ENDIF }
-#endif // ENDIF
-
-#ifdef ELSE
-	#undef ELSE
-#endif // ELSE
-
-#ifndef ELSE
-	#define ELSE } else {
-#endif // ELSE
-
-#ifdef ELIF
-	#undef ELIF
-#endif // ELIF
-
-#ifndef ELIF
-	#define ELIF } else if (
-#endif // ELIF
-
-/// ----------------------------
-
-#ifdef WHILE
-	#undef WHILE
-#endif // WHILE
-
-#ifndef WHILE
-	#define WHILE while (
-#endif // WHILE
-
-#ifdef END_WHILE
-	#undef END_WHILE
-#endif // END_WHILE
-
-#ifndef END_WHILE
-	#define END_WHILE }
-#endif // END_WHILE
-
-/// ----------------------------
-
-#ifdef AND
-	#undef AND
-#endif // AND
-
-#ifndef AND
-	#define AND &&
-#endif // AND
-
-#ifdef OR
-	#undef OR
-#endif // OR
-
-#ifndef OR
-	#define OR ||
-#endif // OR
-
-/// ----------------------------
-
-#ifdef BEGIN
-	#undef BEGIN
-#endif // BEGIN
-
-#ifndef BEGIN
-	#define BEGIN {
-#endif // BEGIN
-
-#ifdef END
-	#undef END
-#endif // END
-
-#ifndef END
-	#define END }
-#endif // END
+#include "imageDrawPixel.h"
 
 namespace irr
 {
@@ -148,74 +30,44 @@ bool drawLine(
 
 	bool blend )
 
-BEGIN_FUNCTION
+{
 
-	IF !dst
-	THEN
-		return false;
-	ENDIF
+	if (!dst) return false;
 
 	const core::dimension2du img_size = dst->getDimension();
 
-	IF img_size.Width==0 AND img_size.Height==0
-	THEN
-		return false;
-	ENDIF
+	if ((img_size.Width==0) || (img_size.Height==0)) return false;
 
 	const s32 dx = core::abs_<s32>( x1 - x0 );
 	const s32 dy = core::abs_<s32>( y1 - y0 );
 
-	IF dx==0 AND dy==0
-	THEN
-		return false;
-	ENDIF
+	if ((dx==0) && (dy==0)) return false;
 
 	s32 sx=1; // sign
 	s32 sy=1; // sign
 
-	IF x0>x1
-	THEN
-		sx = -1;
-	ENDIF
-
-	IF y0>y1
-	THEN
-		sy = -1;
-	ENDIF
+	if (x0>x1) sx = -1;
+	if (y0>y1) sy = -1;
 
 	s32 err = dx-dy;
 	s32 e2 = 0;
 	s32 x = x0;
 	s32 y = y0;
 
-	WHILE 1	THEN
-
+	while(1)
+	{
 		drawPixel( dst,x,y,color, blend);
 
-		IF x==x1 AND y==y1
-		THEN
-			break;
-		ENDIF
+		if ((x==x1) && (y==y1)) break;
 
 		e2 = err << 1;
 
-		IF e2 > -dy
-		THEN
-			err -= dy;
-			x += sx;
-		ENDIF
-
-		IF e2 < dx
-		THEN
-			y += sy;
-			err += dx;
-		ENDIF
-
-	END_WHILE
+		if (e2 > -dy) { err -= dy;	x += sx; }
+		if (e2 < dx) { y += sy; err += dx; }
+	}
 
 	return true;
-
-END_FUNCTION
+}
 
 //! draw a line with 2 color(s) to image ( Bresenham, no AA )
 
@@ -238,28 +90,23 @@ bool drawLine(
 	bool blend )
 
 {
-
-	if (!dst)
-		return false;
+	if (!dst) return false;
 
 	const core::dimension2du img_size = dst->getDimension();
 
-	if ( ( img_size.Width == 0 ) || ( img_size.Height == 0 ) )
+	if ((img_size.Width == 0) || (img_size.Height == 0))
 		return false;
 
 	const s32 dx = core::abs_<s32>( x1 - x0 );
 	const s32 dy = core::abs_<s32>( y1 - y0 );
 
-	if (dx==0 && dy==0)
-		return false;
+	if ((dx==0) && (dy==0)) return false;
 
 	s32 sx = 1; // sign
 	s32 sy = 1; // sign
 
-	if (x0 > x1)
-		sx = -1;
-	if (y0 > y1)
-		sy = -1;
+	if (x0 > x1) sx = -1;
+	if (y0 > y1) sy = -1;
 
 	s32 err = dx-dy;
 	s32 e2 = 0;
@@ -273,22 +120,11 @@ bool drawLine(
 	{
 		numpixels++;
 
-		if (x == x1 && y == y1)
-			break;
+		if ((x==x1) && (y==y1)) break;
 
 		e2 = err << 1;
-		if (e2 > -dy)
-		{
-			err -= dy;
-			x += sx;
-		}
-
-		if (e2 < dx)
-		{
-			err += dx;
-			y += sy;
-		}
-
+		if (e2 > -dy) { err -= dy;	x += sx; }
+		if (e2 < dx) { err += dx; y += sy; }
 	}
 
 	// reset vars;
@@ -329,22 +165,13 @@ bool drawLine(
 
 		drawPixel( dst, x, y, video::SColor( cA, cR, cG, cB), blend );
 
-		if (x == x1 && y == y1)
-			break;
+		if (x == x1 && y == y1) break;
 
 		e2 = err << 1;
-		if (e2 > -dy)
-		{
-			err -= dy;
-			x += sx;
-		}
-
-		if (e2 < dx)
-		{
-			err += dx;
-			y += sy;
-		}
+		if (e2 > -dy)	{	err -= dy;	x += sx; }
+		if (e2 < dx)	{	err += dx;	y += sy; }
 	}
+
 	return true;
 }
 
