@@ -41,6 +41,7 @@
 #include "scene/geometry.h"
 
 #include "video/CLinearColorGradient.h"
+#include "video/CLinearColorGradientTable.h"
 #include "video/ColorConstants.h"
 #include "video/imageDrawCircle.h"
 #include "video/imageDrawEllipse.h"

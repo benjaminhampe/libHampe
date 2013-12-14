@@ -11,8 +11,10 @@ namespace scene
 
 //! default constructor - value ctr ( by render-shape, shape-size, color-gradient, matrix-data, irr::scene::ISceneNode-interface )
 CMatrixSceneNode::CMatrixSceneNode(
-	scene::E_PRIMITIVE_TYPE shapeType, const core::vector3df& shapeSize,
-	video::IColorGradient* colorGradient, core::CMatrix* matrixData,
+	scene::E_PRIMITIVE_TYPE shapeType,
+	const core::vector3df& shapeSize,
+	video::IColorGradient* colorGradient,
+	core::CMatrix* matrixData,
 	ISceneManager* smgr, ISceneNode* parent, s32 id, const core::vector3df& position,
 	const core::vector3df& rotation, const core::vector3df& scale )
 
@@ -20,11 +22,11 @@ CMatrixSceneNode::CMatrixSceneNode(
 
 , PrimitiveType( shapeType )
 
-, BoundingBox( core::aabbox3df( core::vector3df(0,0,0), shapeSize ))
-
 , ColorGradient( colorGradient )
 
 , Data( matrixData )
+
+, BoundingBox( core::aabbox3df( core::vector3df(0,0,0), shapeSize ))
 
 //, IsTextureAtlas(false), AtlasTileSize(0,0), IsBillBoard(false)
 

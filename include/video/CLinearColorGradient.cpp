@@ -68,154 +68,20 @@ core::stringc CLinearColorGradient::toString( ) const
 /// /// /// /// /// /// /// /// /// /// /// ///
 
 CLinearColorGradient::CLinearColorGradient( u32 color_count ) // const SColor& startColor, const SColor& endColor)
-: Name("")
+: IColorGradient( "CLinearColorGradient", color_count )
 {
-	#if _DEBUG
-		os::Printer::log( "CLinearColorGradient::ctr()", ELL_INFORMATION );
-	#endif // _DEBUG
-//	addColor( startColor, 0.0f );
-//	addColor( endColor, 1.0f );
-    Colors.reallocate( color_count );
-    Colors.set_used( 0 );
 }
 
 CLinearColorGradient::~CLinearColorGradient()
 {
-	#if _DEBUG
-		os::Printer::log( "CLinearColorGradient::dtr()", ELL_INFORMATION );
-	#endif // _DEBUG
 	clear();
 }
 
-bool CLinearColorGradient::clear()
+void CLinearColorGradient::clear()
 {
 	Colors.clear();
-	return true;
 }
 
-u32 CLinearColorGradient::getColorCount() const
-{
-	return Colors.size();
-}
-
-core::stringc CLinearColorGradient::getName( ) const
-{
-	return Name;
-}
-
-bool CLinearColorGradient::setName( const core::stringc& name )
-{
-	Name = name;
-	return true;
-}
-
-bool CLinearColorGradient::isTransparent( ) const
-{
-	bool bTransparent = false;
-	u32 i=0;
-	u32 c=getColorCount();
-
-	while (i<c)
-	{
-		if (Colors[i].Color.getAlpha() < 1.0f) // not 255
-		{
-			bTransparent = true;
-			break;
-		}
-		i++; // dont ever forget again foo
-	}
-
-	return bTransparent;
-}
-
-E_MATERIAL_TYPE CLinearColorGradient::getMaterialType( ) const
-{
-	if (isTransparent())
-		return EMT_TRANSPARENT_ALPHA_CHANNEL;
-	else
-		return EMT_SOLID;
-}
-
-ECOLOR_FORMAT CLinearColorGradient::getColorFormat( ) const
-{
-	if (isTransparent())
-		return ECF_A8R8G8B8;
-	else
-		return ECF_R8G8B8;
-}
-
-bool CLinearColorGradient::addColor( const SColor& stopColor, f32 t )
-{
-	return addColor( SColorf(stopColor), t);
-}
-
-bool CLinearColorGradient::addColor( const SColorf& stopColor, f32 t )
-{
-	#if _DEBUG
-		os::Printer::log( "CLinearColorGradient::addColor()", ELL_INFORMATION );
-	#endif // _DEBUG
-
-	MyColorStruct entry;
-	entry.Color = stopColor;
-	entry.Position = core::clamp<f32>( t, 0.0f, 1.0f );
-
-	/// new 12.04.2013: this version just pushes the new stop-color to the end of array
-	/// 				now the user has to sort the list afterwards
-
-//	const u32 c = getColorCount();
-//
-//	if (c==0)
-//	{
-		Colors.push_back( entry );
-//	}
-//	else // if (c>0)
-//	{
-//		bool found_greater_t = false;
-//		u32 greater_t_index = 0;
-//
-//		for (u32 i=0; i<c; i++)
-//		{
-//			if ( core::equals(t, Colors[i].Position) )
-//			{
-//				return *this;	// dont insert if any t does equal one of array-elements
-//			}
-//			else if ( Colors[i].Position > t )
-//			{
-//				found_greater_t = true;
-//				greater_t_index = i+1;
-//				break;
-//			}
-//		}
-//
-//		if (found_greater_t)
-//			Colors.insert( entry, greater_t_index);
-//		else
-//			Colors.push_back( entry );
-//	}
-	return true;
-}
-
-bool CLinearColorGradient::setColor( u32 index, const SColor& stopColor, f32 t )
-{
-	const u32 size0 = getColorCount();
-	if (index >= size0)
-		return false;
-
-	Colors[index].Color = SColorf(stopColor);
-	Colors[index].Position = core::clamp<f32>( t, 0.0f, 1.0f );
-	return true;
-}
-
-bool CLinearColorGradient::setColor( u32 index, const SColorf& stopColor, f32 t )
-{
-	const u32 size0 = getColorCount();
-	if (index >= size0)
-		return false;
-
-	Colors[index].Color = stopColor;
-	Colors[index].Position = core::clamp<f32>( t, 0.0f, 1.0f );
-	return true;
-}
 
 SColor CLinearColorGradient::getColor( f32 t ) const
 {
@@ -278,133 +144,80 @@ SColorf CLinearColorGradient::getColorf( f32 t ) const
 	return SColorf( fr,fg,fb,fa );
 }
 
+//
+//bool CLinearColorGradient::addColor( const SColor& stopColor, f32 t )
+//{
+//	return addColor( SColorf(stopColor), t);
+//}
+//
+//bool CLinearColorGradient::addColor( const SColorf& stopColor, f32 t )
+//{
+//	#if _DEBUG
+//		os::Printer::log( "CLinearColorGradient::addColor()", ELL_INFORMATION );
+//	#endif // _DEBUG
+//
+//	MyColorStruct entry;
+//	entry.Color = stopColor;
+//	entry.Position = core::clamp<f32>( t, 0.0f, 1.0f );
+//
+//	/// new 12.04.2013: this version just pushes the new stop-color to the end of array
+//	/// 				now the user has to sort the list afterwards
+//
+////	const u32 c = getColorCount();
+////
+////	if (c==0)
+////	{
+//		Colors.push_back( entry );
+////	}
+////	else // if (c>0)
+////	{
+////		bool found_greater_t = false;
+////		u32 greater_t_index = 0;
+////
+////		for (u32 i=0; i<c; i++)
+////		{
+////			if ( core::equals(t, Colors[i].Position) )
+////			{
+////				return *this;	// dont insert if any t does equal one of array-elements
+////			}
+////			else if ( Colors[i].Position > t )
+////			{
+////				found_greater_t = true;
+////				greater_t_index = i+1;
+////				break;
+////			}
+////		}
+////
+////		if (found_greater_t)
+////			Colors.insert( entry, greater_t_index);
+////		else
+////			Colors.push_back( entry );
+////	}
+//	return true;
+//}
+//
+//bool CLinearColorGradient::setColor( u32 index, const SColor& stopColor, f32 t )
+//{
+//	const u32 size0 = getColorCount();
+//	if (index >= size0)
+//		return false;
+//
+//	Colors[index].Color = SColorf(stopColor);
+//	Colors[index].Position = core::clamp<f32>( t, 0.0f, 1.0f );
+//	return true;
+//}
+//
+//bool CLinearColorGradient::setColor( u32 index, const SColorf& stopColor, f32 t )
+//{
+//	const u32 size0 = getColorCount();
+//	if (index >= size0)
+//		return false;
+//
+//	Colors[index].Color = stopColor;
+//	Colors[index].Position = core::clamp<f32>( t, 0.0f, 1.0f );
+//	return true;
+//}
 
-// new
-IImage*
-CLinearColorGradient::createImage( u32 w, u32 h, bool bVertical ) const
-{
-	#if _DEBUG
-	os::Printer::log( "CLinearColorGradient::createImage()", ELL_INFORMATION );
-	#endif // _DEBUG
-
-	if (w==0 || h==0)
-	{
-		#if _DEBUG
-		os::Printer::log( "Can't create Image of size zero.", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	IImage* tmp = (IImage*)new CImage( this->getColorFormat(), core::dimension2du(w,h) );
-	if (!tmp)
-	{
-		#if _DEBUG
-		os::Printer::log( "Could not create CImage", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	const core::dimension2du& ImageSize = tmp->getDimension();
-
-	// vertical filling
-	if ( bVertical )
-	{
-		const f32 fy = 1.0f / (f32)h;
-
-		for (u32 y=0; y<ImageSize.Height; y++)
-		{
-			SColor color = getColor( fy*y );
-
-			for (u32 x=0; x<ImageSize.Width; x++)
-			{
-				tmp->setPixel( x,y,color );
-			}
-		}
-
-	}
-	// horizontal filling
-	else
-	{
-		const f32 fx = 1.0f / (f32)w ;
-
-		for (u32 x=0; x<ImageSize.Width; x++)
-		{
-			SColor color = getColor( fx*x );
-
-			for (u32 y=0; y<ImageSize.Height; y++)
-			{
-				tmp->setPixel( x,y,color );
-			}
-		}
-	}
-
-	return tmp;
-}
-
-// new
-ITexture*
-CLinearColorGradient::createTexture( IVideoDriver* driver, u32 w, u32 h, bool bVertical, const io::path& name ) const
-{
-	#if _DEBUG
-	os::Printer::log( "CLinearColorGradient::createTexture()", ELL_INFORMATION );
-	#endif // _DEBUG
-
-	if (!driver)
-	{
-		#if _DEBUG
-		os::Printer::log( "Can't create Texture without IVideoDriver (invalid pointer).", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	if (w==0 || h==0)
-	{
-		#if _DEBUG
-		os::Printer::log( "Can't create Texture of size zero.", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	IImage* tmp = createImage(w,h,bVertical);
-	if (!tmp)
-	{
-		#if _DEBUG
-		os::Printer::log( "Could not create Image", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	io::path TexName = name;
-	if (TexName.size() == 0)
-	{
-		TexName = getName();
-		TexName += io::path("_");
-		if (bVertical)
-			TexName += io::path("v");
-		else
-			TexName += io::path("h");
-		TexName += io::path("_");
-		TexName += (s32)w;
-		TexName += io::path("_x_");
-		TexName += (s32)h;
-	}
-
-	bool bMipMap = driver->getTextureCreationFlag( ETCF_CREATE_MIP_MAPS );
-	driver->setTextureCreationFlag( ETCF_CREATE_MIP_MAPS, false );
-	ITexture* tex = driver->addTexture( TexName, tmp, 0);
-	driver->setTextureCreationFlag( ETCF_CREATE_MIP_MAPS, bMipMap );
-	tmp->drop();
-
-	if (!tex)
-	{
-		#if _DEBUG
-		os::Printer::log( "Could not create Texture", ELL_ERROR );
-		#endif // _DEBUG
-		return 0;
-	}
-
-	return tex;
-}
 
 // swap two colors based on their indices in array
 bool
@@ -435,14 +248,12 @@ CLinearColorGradient::sort( bool bReverse )
 	return *this;
 }
 
-// sort array by increasing t
 CLinearColorGradient&
 CLinearColorGradient::sortQuick( bool bReverse )
 {
 	return *this;
 }
 
-// sort array by increasing t
 CLinearColorGradient&
 CLinearColorGradient::sortBubble( bool bReverse )
 {
@@ -491,6 +302,135 @@ CLinearColorGradient::randomize ( ITimer* timer )
 	return *this;
 }
 
+//
+//
+//// new
+//IImage*
+//CLinearColorGradient::createImage( u32 w, u32 h, bool bVertical ) const
+//{
+//	#if _DEBUG
+//	os::Printer::log( "CLinearColorGradient::createImage()", ELL_INFORMATION );
+//	#endif // _DEBUG
+//
+//	if (w==0 || h==0)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Can't create Image of size zero.", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	IImage* tmp = (IImage*)new CImage( this->getColorFormat(), core::dimension2du(w,h) );
+//	if (!tmp)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Could not create CImage", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	const core::dimension2du& ImageSize = tmp->getDimension();
+//
+//	// vertical filling
+//	if ( bVertical )
+//	{
+//		const f32 fy = 1.0f / (f32)h;
+//
+//		for (u32 y=0; y<ImageSize.Height; y++)
+//		{
+//			SColor color = getColor( fy*y );
+//
+//			for (u32 x=0; x<ImageSize.Width; x++)
+//			{
+//				tmp->setPixel( x,y,color );
+//			}
+//		}
+//
+//	}
+//	// horizontal filling
+//	else
+//	{
+//		const f32 fx = 1.0f / (f32)w ;
+//
+//		for (u32 x=0; x<ImageSize.Width; x++)
+//		{
+//			SColor color = getColor( fx*x );
+//
+//			for (u32 y=0; y<ImageSize.Height; y++)
+//			{
+//				tmp->setPixel( x,y,color );
+//			}
+//		}
+//	}
+//
+//	return tmp;
+//}
+//
+//// new
+//ITexture*
+//CLinearColorGradient::createTexture( IVideoDriver* driver, u32 w, u32 h, bool bVertical, const io::path& name ) const
+//{
+//	#if _DEBUG
+//	os::Printer::log( "CLinearColorGradient::createTexture()", ELL_INFORMATION );
+//	#endif // _DEBUG
+//
+//	if (!driver)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Can't create Texture without IVideoDriver (invalid pointer).", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	if (w==0 || h==0)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Can't create Texture of size zero.", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	IImage* tmp = createImage(w,h,bVertical);
+//	if (!tmp)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Could not create Image", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	io::path TexName = name;
+//	if (TexName.size() == 0)
+//	{
+//		TexName = getName();
+//		TexName += io::path("_");
+//		if (bVertical)
+//			TexName += io::path("v");
+//		else
+//			TexName += io::path("h");
+//		TexName += io::path("_");
+//		TexName += (s32)w;
+//		TexName += io::path("_x_");
+//		TexName += (s32)h;
+//	}
+//
+//	bool bMipMap = driver->getTextureCreationFlag( ETCF_CREATE_MIP_MAPS );
+//	driver->setTextureCreationFlag( ETCF_CREATE_MIP_MAPS, false );
+//	ITexture* tex = driver->addTexture( TexName, tmp, 0);
+//	driver->setTextureCreationFlag( ETCF_CREATE_MIP_MAPS, bMipMap );
+//	tmp->drop();
+//
+//	if (!tex)
+//	{
+//		#if _DEBUG
+//		os::Printer::log( "Could not create Texture", ELL_ERROR );
+//		#endif // _DEBUG
+//		return 0;
+//	}
+//
+//	return tex;
+//}
+
 bool
 CLinearColorGradient::read ( io::IXMLReader* pReader )
 {
@@ -506,103 +446,103 @@ CLinearColorGradient::write ( io::IXMLWriter* pWriter ) const
 		return false;
 	return true;
 }
-
-// copy
-CLinearColorGradient&
-CLinearColorGradient::operator= ( const CLinearColorGradient& other)
-{
-	return *this;
-}
-
-// test for equality
-bool
-CLinearColorGradient::operator== ( const CLinearColorGradient& other) const
-{
-	return false;
-}
-
-SColor
-CLinearColorGradient::operator() ( f32 t ) const
-{
-	return getColor(t);
-}
-
-const CLinearColorGradient::MyColorStruct&
-CLinearColorGradient::operator[]	( u32 i ) const
-{
-	return Colors[i];
-}
-
-CLinearColorGradient::MyColorStruct&
-CLinearColorGradient::operator[]	( u32 i )
-{
-	return Colors[i];
-}
-
-CLinearColorGradient&
-CLinearColorGradient::operator+= ( const MyColorStruct& entry_to_add )
-{
-
-	return *this;
-}
-
-CLinearColorGradient&
-CLinearColorGradient::operator-= ( const MyColorStruct& entry_to_del )
-{
-	return *this;
-}
-
-CLinearColorGradient::MyColorStruct&
-CLinearColorGradient::MyColorStruct::operator= ( const MyColorStruct& other )
-{
-	Color = other.Color;
-	Position = other.Position;
-	return *this;
-}
-
-bool
-CLinearColorGradient::MyColorStruct::operator< ( const MyColorStruct& other ) const
-{
-	if (Position < other.Position)
-		return true;
-	else
-		return false;
-}
-
-bool
-CLinearColorGradient::MyColorStruct::operator> ( const MyColorStruct& other ) const
-{
-	if (Position > other.Position)
-		return true;
-	else
-		return false;
-}
-
-bool
-CLinearColorGradient::MyColorStruct::operator==	( const MyColorStruct& other ) const
-{
-	if ( core::equals( Position, other.Position ) )
-		return true;
-	else
-		return false;
-}
-
-bool
-CLinearColorGradient::MyColorStruct::operator!=	( const MyColorStruct& other ) const
-{
-	return (!( (*this)==other ));
-}
-
-bool
-CLinearColorGradient::MyColorStruct::operator<=	( const MyColorStruct& other ) const
-{
-	return ( ((*this) == other) || ((*this) < other) );
-}
-bool
-CLinearColorGradient::MyColorStruct::operator>=	( const MyColorStruct& other ) const
-{
-	return ( ((*this) == other) || ((*this) > other) );
-}
+//
+//// copy
+//CLinearColorGradient&
+//CLinearColorGradient::operator= ( const CLinearColorGradient& other)
+//{
+//	return *this;
+//}
+//
+//// test for equality
+//bool
+//CLinearColorGradient::operator== ( const CLinearColorGradient& other) const
+//{
+//	return false;
+//}
+//
+//SColor
+//CLinearColorGradient::operator() ( f32 t ) const
+//{
+//	return getColor(t);
+//}
+//
+//const CLinearColorGradient::MyColorStruct&
+//CLinearColorGradient::operator[]	( u32 i ) const
+//{
+//	return Colors[i];
+//}
+//
+//CLinearColorGradient::MyColorStruct&
+//CLinearColorGradient::operator[]	( u32 i )
+//{
+//	return Colors[i];
+//}
+//
+//CLinearColorGradient&
+//CLinearColorGradient::operator+= ( const MyColorStruct& entry_to_add )
+//{
+//
+//	return *this;
+//}
+//
+//CLinearColorGradient&
+//CLinearColorGradient::operator-= ( const MyColorStruct& entry_to_del )
+//{
+//	return *this;
+//}
+//
+//CLinearColorGradient::MyColorStruct&
+//CLinearColorGradient::MyColorStruct::operator= ( const MyColorStruct& other )
+//{
+//	Color = other.Color;
+//	Position = other.Position;
+//	return *this;
+//}
+//
+//bool
+//CLinearColorGradient::MyColorStruct::operator< ( const MyColorStruct& other ) const
+//{
+//	if (Position < other.Position)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool
+//CLinearColorGradient::MyColorStruct::operator> ( const MyColorStruct& other ) const
+//{
+//	if (Position > other.Position)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool
+//CLinearColorGradient::MyColorStruct::operator==	( const MyColorStruct& other ) const
+//{
+//	if ( core::equals( Position, other.Position ) )
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool
+//CLinearColorGradient::MyColorStruct::operator!=	( const MyColorStruct& other ) const
+//{
+//	return (!( (*this)==other ));
+//}
+//
+//bool
+//CLinearColorGradient::MyColorStruct::operator<=	( const MyColorStruct& other ) const
+//{
+//	return ( ((*this) == other) || ((*this) < other) );
+//}
+//bool
+//CLinearColorGradient::MyColorStruct::operator>=	( const MyColorStruct& other ) const
+//{
+//	return ( ((*this) == other) || ((*this) > other) );
+//}
 
 } // end namespace video
 
