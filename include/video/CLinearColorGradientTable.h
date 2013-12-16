@@ -18,6 +18,7 @@ namespace irr
 		class CLinearColorGradientTable : public IColorGradient
 		{
 			core::array<SColorf> LookUpTable;
+			f32 InvLookUpTableSize;
 		public:
 
 			/// @brief value-constructor
@@ -64,13 +65,27 @@ namespace irr
 						LookUpTable[i] = zeroColor;
 					}
 				}
+
+				if (table_size > 1)
+				{
+					InvLookUpTableSize = core::reciprocal( (f32)(table_size-1) );
+				}
+				else
+				{
+					InvLookUpTableSize = 0.0f;
+				}
+
 			}
 
 			/// @brief calculate new lookup-table-colors from stop-color-array
 			virtual void updateTable()
 			{
-				// find maximum and minimum neighbors
-				u32 lut_count = LookUpTable.size();
+				#if _DEBUG
+					printf( "CLinearColorGradientTable::updateTable()\n" );
+				#endif // _DEBUG
+
+				const u32 lut_count = LookUpTable.size();
+
 				if (lut_count == 0)
 				{
 					return;
@@ -81,31 +96,72 @@ namespace irr
 					return;
 				}
 
-//				/// loop
-//				for (u32 i=1; i<lut_count; i++)
-//				{
-//					f32 pos = Colors[i].Position;
-//
-//					// interpolate between prev and next neighbor color
-//					const SColorf& A = Colors[i-1].Color;
-//					const SColorf& B = Colors[i].Color;
-//					const f32 min_t = Colors[i-1].Position;
-//					const f32 max_t = Colors[i].Position;
-//
-//					// normalized
-//					const f32 dx = core::abs_<f32>( (pos - min_t) / (max_t - min_t) );
-//
-//					// new color
-//					const f32 fa = A.getAlpha() + dx*( B.getAlpha() - A.getAlpha() );
-//					const f32 fr = A.getRed() + dx*( B.getRed() - A.getRed() );
-//					const f32 fg = A.getGreen() + dx*( B.getGreen() - A.getGreen() );
-//					const f32 fb = A.getBlue() + dx*( B.getBlue() - A.getBlue() );
-//
-//					SColorf color( fr,fg,fb,fa );
-//
-//					_IRR_DEBUG_BREAK_IF( i < LookUpTable.size() )
-//					LookUpTable[i] = color;
-//				}
+
+				/// loop lookup-table
+				for (u32 i=0; i<lut_count; i++)
+				{
+					/// calculate current 't'
+
+					f32 t = (f32)i * InvLookUpTableSize;
+
+					t = core::clamp<f32>( t, 0.0f, 1.0f);
+
+					/// find corresponding neighbor-colors
+
+					bool found_greater_t = false;
+					u32 greater_t_index = 0;
+
+					for (u32 c=0; c<getColorCount(); c++)
+					{
+						const f32 pos = Colors[c].Position;
+
+						if ( t < pos )
+						{
+							found_greater_t = true;
+							greater_t_index = c;
+							break;
+						}
+						else if ( core::equals( t, pos ) )
+						{
+							greater_t_index = c;
+							break;
+						}
+					}
+
+					if (!found_greater_t)
+					{
+						LookUpTable[i] = Colors[getColorCount()-1].Color;
+					}
+					else
+					{
+						/// interpolate color between neighbors
+						const SColorf& A = Colors[greater_t_index-1].Color;
+						const SColorf& B = Colors[greater_t_index].Color;
+						const f32 min_t = Colors[greater_t_index-1].Position;
+						const f32 max_t = Colors[greater_t_index].Position;
+						const f32 dx = core::abs_<f32>( (t - min_t) / (max_t - min_t) );
+						const f32 fa = A.getAlpha() + dx*( B.getAlpha() - A.getAlpha() );
+						const f32 fr = A.getRed() + dx*( B.getRed() - A.getRed() );
+						const f32 fg = A.getGreen() + dx*( B.getGreen() - A.getGreen() );
+						const f32 fb = A.getBlue() + dx*( B.getBlue() - A.getBlue() );
+
+						LookUpTable[i] = SColorf( fr,fg,fb,fa );
+					}
+
+
+				#if _DEBUG
+					core::stringc dText("LookUpTable[");
+					dText += i;
+					dText += "], t=";
+					dText += t;
+					dText += ", t_index=";
+					dText += greater_t_index;
+					dText += ", color=";
+					dText += video::toString( LookUpTable[i].Color.toSColor() );
+					printf( "%s\n", dText.c_str() );
+				#endif // _DEBUG
+
+				}
 			}
 
 			/// @brief get stopcolor

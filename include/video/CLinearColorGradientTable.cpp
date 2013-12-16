@@ -17,7 +17,7 @@ namespace video
 {
 
 CLinearColorGradientTable :: CLinearColorGradientTable( u32 color_count, u32 table_size )
-: IColorGradient("", color_count)
+: IColorGradient("", color_count), InvLookUpTableSize(0.0f)
 {
 	#if _DEBUG
 		os::Printer::log( "CLinearColorGradientTable::ctr()", ELL_INFORMATION );

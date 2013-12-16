@@ -154,6 +154,7 @@ namespace video
 			false);
 		#endif // _DEBUG
 
+		return true;
 	}
 
 
@@ -420,7 +421,7 @@ namespace video
 
 		if (!font)
 		{
-			printf(  "Invalid pointer to SFont", ELL_ERROR );
+			os::Printer::log( "Invalid pointer to SFont", ELL_ERROR );
 			return 0;
 		}
 
@@ -478,7 +479,7 @@ namespace video
 
 		if (!img)
 		{
-			printf(  "Could not create image of txt_size", ELL_ERROR);
+			os::Printer::log( "Could not create image of txt_size", ELL_ERROR);
 			return 0;
 		}
 
@@ -605,13 +606,13 @@ bool
 
 		if (!dst)
 		{
-			printf(  "drawText() - Invalid pointer to IImage", ELL_ERROR );
+			os::Printer::log( "drawText() - Invalid pointer to IImage", ELL_ERROR );
 			return false;
 		}
 
 		if (!font)
 		{
-			printf(  "drawText() - Invalid pointer to IGUIFont", ELL_ERROR );
+			os::Printer::log( "drawText() - Invalid pointer to IGUIFont", ELL_ERROR );
 			return false;
 		}
 
@@ -619,13 +620,13 @@ bool
 
 		if (x>=(s32)dst_size.Width)
 		{
-			printf(  "drawText() - Cant draw outside destination Image ( x coord too big )", ELL_ERROR );
+			os::Printer::log( "drawText() - Cant draw outside destination Image ( x coord too big )", ELL_ERROR );
 			return false;
 		}
 
 		if (y>=(s32)dst_size.Height)
 		{
-			printf(  "drawText() - Cant draw outside destination Image ( y coord too big )", ELL_ERROR );
+			os::Printer::log( "drawText() - Cant draw outside destination Image ( y coord too big )", ELL_ERROR );
 			return false;
 		}
 
@@ -633,7 +634,7 @@ bool
 
 		if (!img)
 		{
-			printf(  "drawText() - Could not create image from text", ELL_ERROR );
+			os::Printer::log( "drawText() - Could not create image from text", ELL_ERROR );
 			return false;
 		}
 
@@ -689,6 +690,7 @@ bool
 		if (img)
 			img->drop();
 
+		return true;
 	}
 
 #endif // _IRR_COMPILE_WITH_FREETYPE2_
